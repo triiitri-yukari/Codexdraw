@@ -1,0 +1,6 @@
+# usage logs
+usage.jsonl
+*.log
+
+# generated images
+out/

@@ -39,7 +39,7 @@ const TOOL = {
         type: "array", items: { type: "string" }, minItems: 1, maxItems: 4,
         description: "Several different prompts, one image each, run in parallel. Use instead of `prompt`.",
       },      filename: { type: "string", description: "Base file name without extension, e.g. 'sleepy-fox'. Default: timestamp." },
-      out_dir: { type: "string", description: "Directory to save into. Default: <cwd>/out." },
+      out_dir: { type: "string", description: "Directory to save into. Default: <cwd>/codexdraw." },
       count: { type: "integer", minimum: 1, maximum: 4, description: "Variations of `prompt` in one session. Default 1." },
       references: { type: "array", items: { type: "string" }, description: "Local reference image paths." },
       model: { type: "string", description: `Codex model. Default ${DEFAULT_MODEL}.` },
@@ -192,7 +192,7 @@ async function draw(args) {
   if (!prompts.length) throw new Error("prompt or prompts is required");
   // `count` means variations of a single prompt; with several prompts each gets one image.
   const count = prompts.length === 1 ? Math.min(4, Math.max(1, Number(args.count) || 1)) : 1;
-  const outDir = path.resolve(args.out_dir || path.join(process.cwd(), "out"));
+  const outDir = path.resolve(args.out_dir || path.join(process.cwd(), "codexdraw"));
   const base = (args.filename || `draw-${new Date().toISOString().replace(/[:.]/g, "-")}`).replace(/[\\/:*?"<>|]/g, "_");
   const refs = (args.references || []).map((r) => path.resolve(r));
   const model = args.model || DEFAULT_MODEL;

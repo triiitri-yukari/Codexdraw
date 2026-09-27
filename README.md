@@ -50,7 +50,7 @@ Restart the client afterwards so it picks up the new tool.
 | `prompts` | Up to 4 different prompts, one image each, generated **in parallel**. Use instead of `prompt`. |
 | `count` | 1–4 variations of a single `prompt`, generated one after another in one session. |
 | `filename` | Base file name without extension (default: timestamp). Multiple images get `-1`, `-2`, … |
-| `out_dir` | Where to save the PNGs (default: `<working dir>/out`). |
+| `out_dir` | Where to save the PNGs (default: `<working dir>/codexdraw`). |
 | `references` | Local image paths to use as references. |
 | `model` | Codex model (default `gpt-6-luna`). |
 | `preview` | Return an inline JPEG preview (default `true`). |

@@ -3,4 +3,4 @@ usage.jsonl
 *.log
 
 # generated images
-out/
+codexdraw/

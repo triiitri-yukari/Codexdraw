@@ -17,6 +17,8 @@ const CODEX_JS =
   path.join(process.env.APPDATA || "", "npm", "node_modules", "@openai", "codex", "bin", "codex.js");
 const DEFAULT_MODEL = process.env.CODEX_DRAW_MODEL || "gpt-6-luna";
 const TIMEOUT_MS = Number(process.env.CODEX_DRAW_TIMEOUT_MS || 600_000);
+// Set CODEX_DRAW_KEEP_ORIGINALS=1 to keep Codex's copy in generated_images.
+const KEEP_ORIGINALS = /^(1|true|yes)$/i.test(process.env.CODEX_DRAW_KEEP_ORIGINALS || "");
 // Longest side of the inline JPEG preview; smaller saves the client's image tokens.
 const PREVIEW_PX = Number(process.env.CODEX_DRAW_PREVIEW_PX || 768);
 // Set CODEX_DRAW_LOG=off to disable the usage log.
@@ -169,7 +171,7 @@ async function runSession({ prompt, count, refs, model }) {
         (res.errors.length ? `\nErrors: ${res.errors.join("; ")}` : "")
     );
   }
-  return { pngs: pngs.map((x) => x.p), usage: res.usage, secs };
+  return { pngs: pngs.map((x) => x.p), genDir, usage: res.usage, secs };
 }
 
 // Backend-only usage log (one JSON line per draw call); never returned to the MCP client.
@@ -205,6 +207,12 @@ async function draw(args) {
     const dest = path.join(outDir, all.length === 1 ? `${base}.png` : `${base}-${i + 1}.png`);
     await fs.copyFile(all[i], dest);
     saved.push(dest);
+  }
+  // Every image is copied, so drop Codex's copies (sessions are ephemeral; nothing else refers to them).
+  if (!KEEP_ORIGINALS) {
+    for (const r of results) {
+      if (r.status === "fulfilled") await fs.rm(r.value.genDir, { recursive: true, force: true }).catch(() => {});
+    }
   }
   if (!saved.length) {
     throw new Error(results.map((r) => r.reason?.message || String(r.reason)).join("\n"));

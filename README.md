@@ -8,7 +8,7 @@ No API key, no dependencies. It never reads your login tokens: all it does is ru
 
 1. The `draw` tool starts `codex exec` (default model `gpt-6-luna`, low reasoning effort, read-only sandbox).
 2. The model is told to call its built-in image generation tool with your prompt **verbatim**, with no rewriting.
-3. Codex saves the PNG under `~/.codex/generated_images/<thread-id>/`. The server copies it into your output folder.
+3. Codex saves the PNG under `~/.codex/generated_images/<thread-id>/`. The server copies it into your output folder, then deletes Codex's copy so images aren't stored twice.
 4. The tool replies with the saved file paths and a small JPEG preview.
 
 ## Requirements
@@ -76,6 +76,7 @@ Tip: add "no text" to prompts if you don't want the model to add lettering to th
 | `CODEX_DRAW_PREVIEW_PX` | `768` | Longest side of the inline preview (smaller saves the agent's image tokens) |
 | `CODEX_DRAW_LOG` | `usage.jsonl` next to the server | Usage log path, or `off` to disable |
 | `CODEX_JS` | `%APPDATA%\npm\node_modules\@openai\codex\bin\codex.js` | Path to Codex's `codex.js`; set this on macOS/Linux or for non-npm installs |
+| `CODEX_DRAW_KEEP_ORIGINALS` | off | Set to `1` to keep Codex's own copy in `generated_images` (by default it is deleted once saved to `out_dir`) |
 | `CODEX_HOME` | `~/.codex` | Codex home (where generated images are stored) |
 
 With Claude Code, pass them with `-e`, e.g. `claude mcp add --scope user codex-draw -e CODEX_DRAW_LOG=off -- node ...`.
